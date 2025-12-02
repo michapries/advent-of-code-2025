@@ -3,13 +3,10 @@ import pandas as pd
 import datetime
 import math
 
-def get_day():
-    return datetime.datetime.today().day
-
-
 def get_input(testinput=0):
     filename = 'input.txt' if testinput == 0 else f'testinput{testinput}.txt'
-    with open(f'./day{get_day()}/{filename}', 'r') as input:
+    current_day = datetime.datetime.today().day
+    with open(f'./day{current_day}/{filename}', 'r') as input:
         return input.readlines()
             
 
