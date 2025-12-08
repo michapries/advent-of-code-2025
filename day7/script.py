@@ -29,13 +29,40 @@ def part1():
                 if grid[i][beam_idx] == '.':
                     grid[i, beam_idx] = '|'
 
-    # for line in grid:
-    #     print(''.join(line))
     return total_splits
 
 
 def part2():
-    return
+    grid = np.array([list(line.strip('\n')) for line in get_input()])
+
+    # Ugle formatting to have an int array ¯\_(ツ)_/¯
+    grid[grid == '.'] = 0
+    grid[grid == '^'] = 5
+    grid[grid == 'S'] = 3
+    
+    grid = grid.astype(int)
+
+    grid[grid == 5] = -1
+    grid[grid == 3] = -2
+
+    for i in range(grid.shape[0]):
+        if i > 0:
+            splitter_indices = np.where(grid[i] == -1)[0]               
+
+            for splitter_idx in splitter_indices:
+                if grid[i-1][splitter_idx] != 0:                    
+                    grid[i, splitter_idx-1] = grid[i, splitter_idx-1] + grid[i-1][splitter_idx]
+                    grid[i, splitter_idx+1] = grid[i, splitter_idx+1] + grid[i-1][splitter_idx]
+
+        
+            prev_line_beams = np.where((grid[i-1] != -1) & ((grid[i-1] != 0) | (grid[i-1] == -2)))[0]
+            for beam_idx in prev_line_beams:
+                if grid[i-1][beam_idx] == -2:
+                    grid[i, beam_idx] = 1
+                elif grid[i][beam_idx] != -1:
+                    grid[i, beam_idx] += grid[i-1][beam_idx]
+
+    return sum(map(int, grid[-1]))
 
 
 def main(is_part1):
